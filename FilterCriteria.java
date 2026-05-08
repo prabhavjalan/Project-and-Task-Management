@@ -1,0 +1,3 @@
+enum FilterCriteria {
+    ALL, OVERDUE, URGENT, COMPLETED, IN_PROGRESS, NOT_STARTED;
+}
