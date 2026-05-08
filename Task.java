@@ -1,44 +1,45 @@
-import java.time.*;
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class Task {
-    
-    private String title;
-    private String description;
-    private LocalDateTime deadline;
-    private LocalDateTime creationDate;
+
+    private String name;
+    private LocalDate deadline;
+    private LocalDate creationDate;
     private Status status;
-    private List<String> tags = new ArrayList<>();
+    private List<Tag> tags = new ArrayList<>();
 
-    public Task(String title, LocalDateTime deadline) {
-        this.title = title;
+    public Task() {
+        this.creationDate = LocalDate.now();
+        this.status = Status.NOT_STARTED;
+    }
+
+    public Task(String name, LocalDate deadline) {
+        this.name = name;
         this.deadline = deadline;
-        this.creationDate = LocalDateTime.now();
+        this.creationDate = LocalDate.now();
+        this.status = Status.NOT_STARTED;
     }
 
-    public String getTitle() {
-        return this.title;
+    public String getName() {
+        return this.name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getDescription() {
-        return this.description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public LocalDateTime getDeadline() {
+    public LocalDate getDeadline() {
         return this.deadline;
     }
 
-    public void setDeadline(LocalDateTime deadline) {
+    public void setDeadline(LocalDate deadline) {
         this.deadline = deadline;
+    }
+
+    public LocalDate getCreationDate() {
+        return this.creationDate;
     }
 
     public Status getStatus() {
@@ -49,40 +50,21 @@ public class Task {
         this.status = status;
     }
 
-    public LocalDateTime getCreationDate() {
-        return this.creationDate;
-    }
-
-    public List<String> getTags() {
+    public List<Tag> getTags() {
         return this.tags;
     }
 
-    public void addTag(String tag) {
+    public void addTag(Tag tag) {
         this.tags.add(tag);
     }
 
-    public void removeTag(String tag) {
+    public void removeTag(Tag tag) {
         this.tags.remove(tag);
     }
 
-    public boolean isOverdue() {
-        LocalDateTime current = LocalDateTime.now();
-        if (current.isAfter(this.deadline)) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
     public boolean isUrgent() {
-        LocalDateTime current = LocalDateTime.now();
-        long hours = ChronoUnit.HOURS.between(current, this.deadline);
-        if (hours <= 48) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        if (deadline == null) return false;
+        long days = ChronoUnit.DAYS.between(LocalDate.now(), this.deadline);
+        return days >= 0 && days <= 2;
     }
 }
