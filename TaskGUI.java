@@ -1,7 +1,5 @@
 import java.awt.event.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.time.LocalDate;
 import javax.swing.*;
 import javax.swing.border.*;
 
@@ -11,7 +9,7 @@ public class TaskGUI extends JFrame {
 
     public TaskGUI(Project project, int i) {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 480, 280);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -20,53 +18,60 @@ public class TaskGUI extends JFrame {
         switch (i) {
             case 1 ->                 {
                     contentPane.setBorder(BorderFactory.createTitledBorder("Add Task"));
+                    JLabel name = new JLabel("Name");
+                    name.setBounds(30, 45, 100, 20);
+                    contentPane.add(name);
+
                     JTextField t1 = new JTextField();
-                    t1.setBounds(240, 40, 130, 26);
+                    t1.setBounds(260, 42, 190, 26);
                     contentPane.add(t1);
                     t1.setColumns(10);
+
+                    JLabel deadline = new JLabel("Deadline (yyyy-mm-dd)");
+                    deadline.setBounds(30, 90, 220, 20);
+                    contentPane.add(deadline);
+
                     JTextField t2 = new JTextField();
-                    t2.setBounds(240, 88, 130, 26);
+                    t2.setBounds(260, 87, 190, 26);
                     contentPane.add(t2);
                     t2.setColumns(10);
+
                     JButton b1 = new JButton("Save");
                     b1.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
-                            String input1 = t1.getText();
-                            String input2 = t2.getText();
-                            save(project, input1, input2);
+                            save(project, t1.getText(), t2.getText());
                         }
                     });
-                    b1.setBounds(51, 172, 117, 29);
+                    b1.setBounds(80, 170, 120, 29);
                     contentPane.add(b1);
+
                     JButton b2 = new JButton("Cancel");
                     b2.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
                             dispose();
                         }
                     });
-                    b2.setBounds(240, 172, 117, 29);
+                    b2.setBounds(260, 170, 120, 29);
                     contentPane.add(b2);
-                    JLabel title = new JLabel("Title");
-                    title.setBounds(100, 45, 61, 16);
-                    contentPane.add(title);
-                    JLabel deadline = new JLabel("Deadline (yyyy-mm-dd)");
-                    deadline.setBounds(100, 93, 200, 16);
-                    contentPane.add(deadline);
                 }
             case 2 ->                 {
                     contentPane.setBorder(BorderFactory.createTitledBorder("Edit Task"));
+                    JLabel taskName = new JLabel("Task Name");
+                    taskName.setBounds(30, 60, 180, 20);
+                    contentPane.add(taskName);
+
                     JTextField t1 = new JTextField();
-                    t1.setBounds(240, 68, 130, 26);
+                    t1.setBounds(180, 57, 270, 26);
                     contentPane.add(t1);
                     t1.setColumns(10);
+
                     JButton b1 = new JButton("Edit Task");
                     b1.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
-                            String input = t1.getText();
-                            editTask(project, input);
+                            editTask(project, t1.getText());
                         }
                     });
-                    b1.setBounds(21, 172, 117, 29);
+                    b1.setBounds(80, 140, 140, 29);
                     contentPane.add(b1);
 
                     JButton b2 = new JButton("Cancel");
@@ -75,74 +80,96 @@ public class TaskGUI extends JFrame {
                             dispose();
                         }
                     });
-                    b2.setBounds(270, 172, 117, 29);
+                    b2.setBounds(260, 140, 120, 29);
                     contentPane.add(b2);
-
-                    JLabel taskName = new JLabel("Task Name");
-                    taskName.setBounds(137, 73, 100, 16);
-                    contentPane.add(taskName);
                 }
             case 3 ->                 {
                     contentPane.setBorder(BorderFactory.createTitledBorder("Delete Task"));
+                    JLabel taskName = new JLabel("Task Name");
+                    taskName.setBounds(30, 60, 180, 20);
+                    contentPane.add(taskName);
+
                     JTextField t1 = new JTextField();
-                    t1.setBounds(240, 68, 130, 26);
+                    t1.setBounds(180, 57, 270, 26);
                     contentPane.add(t1);
                     t1.setColumns(10);
+
                     JButton b1 = new JButton("Delete");
                     b1.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
-                            String input = t1.getText();
-                            delete(project, input);
+                            delete(project, t1.getText());
                         }
                     });
-                    b1.setBounds(51, 172, 117, 29);
+                    b1.setBounds(80, 140, 120, 29);
                     contentPane.add(b1);
-                    JButton b3 = new JButton("Cancel");
-                    b3.addActionListener(new ActionListener() {
+
+                    JButton b2 = new JButton("Cancel");
+                    b2.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
                             dispose();
                         }
                     });
-                    b3.setBounds(240, 172, 117, 29);
-                    contentPane.add(b3);
-                    JLabel taskName = new JLabel("Task Name");
-                    taskName.setBounds(137, 73, 100, 16);
-                    contentPane.add(taskName);
+                    b2.setBounds(260, 140, 120, 29);
+                    contentPane.add(b2);
                 }
             default -> {
             }
         }
     }
     
-    void save(Project project, String input1, String input2) {
-        input2 += " 00:00";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime dateTime = LocalDateTime.parse(input2, formatter);
-        Task task = new Task(input1, dateTime);
-        project.addTasks(task);
+    void save(Project project, String name, String deadlineStr) {
+        if (name == null || name.isBlank()) {
+            JOptionPane.showMessageDialog(this, "Please enter a task name.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        LocalDate deadline;
+        try {
+            deadline = LocalDate.parse(deadlineStr);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Invalid date. Please use yyyy-mm-dd format.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        Task task = new Task(name, deadline);
+        ProjectManager pm = new ProjectManager();
+        pm.addTask(project, task);
 		dispose();
     }
 
-	void editTask(Project project, String input) {
-        List<Task> list = project.getTasks();
-		for (int i = 0; i < list.size(); i++) {
-			if (list.get(i).getTitle().equals(input)) {
-                EditTaskGUI c1 = new EditTaskGUI(list.get(i));
-		        c1.show();
-			}
-		}
-        
+	void editTask(Project project, String name) {
+        if (name == null || name.isBlank()) {
+            JOptionPane.showMessageDialog(this, "Please enter a task name.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        for (Task t : project.getTasks()) {
+            if (t.getName() != null && t.getName().equals(name)) {
+                EditTaskGUI c1 = new EditTaskGUI(project, t);
+                c1.show();
+                dispose();
+                return;
+            }
+        }
+        JOptionPane.showMessageDialog(this, "Task '" + name + "' not found in this project.", "Error", JOptionPane.ERROR_MESSAGE);
 	}
 
-	void delete(Project project, String title) {
-		List<Task> list = project.getTasks();
-		for (int i = 0; i < list.size(); i++) {
-			if (list.get(i).getTitle().equals(title)) {
-				project.removeTasks(list.get(i));
-                dispose();
-			}
-		}
-		
-		
+	void delete(Project project, String name) {
+        if (name == null || name.isBlank()) {
+            JOptionPane.showMessageDialog(this, "Please enter a task name.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        boolean exists = false;
+        for (Task t : project.getTasks()) {
+            if (t.getName() != null && t.getName().equals(name)) {
+                exists = true;
+                break;
+            }
+        }
+        if (!exists) {
+            JOptionPane.showMessageDialog(this, "Task '" + name + "' not found in this project.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+		ProjectManager pm = new ProjectManager();
+		pm.deleteTask(project, name);
+		JOptionPane.showMessageDialog(this, "Task '" + name + "' has been deleted.", "Deleted", JOptionPane.INFORMATION_MESSAGE);
+		dispose();
 	}
 }

@@ -2,7 +2,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-public class Project {
+public class Project implements Sortable {
 
     private String name;
     private LocalDate deadline;
@@ -89,5 +89,10 @@ public class Project {
         if (deadline == null) return false;
         long days = ChronoUnit.DAYS.between(LocalDate.now(), this.deadline);
         return days >= 0 && days <= 2;
+    }
+
+    public boolean isOverdue() {
+        if (deadline == null) return false;
+        return LocalDate.now().isAfter(this.deadline);
     }
 }

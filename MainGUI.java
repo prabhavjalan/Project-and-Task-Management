@@ -8,7 +8,7 @@ public class MainGUI extends JFrame {
 
 	public MainGUI() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 450, 480);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -21,7 +21,7 @@ public class MainGUI extends JFrame {
 				addProject();
 			}
 		});
-		b1.setBounds(170, 54, 117, 29);
+		b1.setBounds(155, 30, 130, 29);
 		contentPane.add(b1);
 		
 		JButton b2 = new JButton("Edit Project");
@@ -30,7 +30,7 @@ public class MainGUI extends JFrame {
 				editProject();
 			}
 		});
-		b2.setBounds(170, 108, 117, 29);
+		b2.setBounds(155, 75, 130, 29);
 		contentPane.add(b2);
 		
 		JButton b3 = new JButton("Delete Project");
@@ -39,8 +39,44 @@ public class MainGUI extends JFrame {
 				deleteProject();
 			}
 		});
-		b3.setBounds(170, 170, 117, 29);
+		b3.setBounds(155, 120, 130, 29);
 		contentPane.add(b3);
+
+		JButton b4 = new JButton("Search");
+		b4.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				search();
+			}
+		});
+		b4.setBounds(155, 175, 130, 29);
+		contentPane.add(b4);
+
+		JButton b5 = new JButton("Filter / Sort");
+		b5.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				filter();
+			}
+		});
+		b5.setBounds(155, 220, 130, 29);
+		contentPane.add(b5);
+
+		JButton b6 = new JButton("Manage Tags");
+		b6.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tags();
+			}
+		});
+		b6.setBounds(155, 275, 130, 29);
+		contentPane.add(b6);
+
+		JButton b7 = new JButton("Update Status");
+		b7.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				status();
+			}
+		});
+		b7.setBounds(155, 320, 130, 29);
+		contentPane.add(b7);
 
     }
 
@@ -59,6 +95,26 @@ public class MainGUI extends JFrame {
 	void deleteProject() {
 		ProjectGUI c1 = new ProjectGUI(3);
 		c1.show();
+	}
+
+	void search() {
+		SearchGUI s = new SearchGUI();
+		s.show();
+	}
+
+	void filter() {
+		FilterGUI f = new FilterGUI();
+		f.show();
+	}
+
+	void tags() {
+		TagGUI t = new TagGUI();
+		t.show();
+	}
+
+	void status() {
+		StatusGUI s = new StatusGUI();
+		s.show();
 	}
 
 }

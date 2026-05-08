@@ -1,70 +1,61 @@
-import java.time.LocalDateTime;
-import java.time.format.*;
+import java.time.LocalDate;
 import java.util.*;
 
 public class ProjectManager {
 
     private static List<Project> projects = new ArrayList<>();
 
-    public void createProject(String title, String deadline) {
-        deadline += " 00:00";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime dateTime = LocalDateTime.parse(deadline, formatter);
-        Project project = new Project(title, dateTime);
+    public Project createProject(String name, LocalDate deadline) {
+        Project project = new Project(name, deadline);
         projects.add(project);
+        return project;
     }
 
-    public void editProject(Project project, String title, String deadline, String description) {
-        project.setTitle(title);
-        deadline += " 00:00";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime dateTime = LocalDateTime.parse(deadline, formatter);
-        project.setDeadline(dateTime);
-        project.setDescription(description);
+    public void editProject(String name, Project data) {
+        Project p = getProject(name);
+        if (p == null) return;
+        if (data.getName() != null) p.setName(data.getName());
+        if (data.getDeadline() != null) p.setDeadline(data.getDeadline());
     }
 
-    public void deleteProject(Project project) {
-        projects.remove(project);
+    public void deleteProject(String name) {
+        projects.removeIf(p -> p.getName() != null && p.getName().equals(name));
     }
 
-    public List<Project> getProjects() {
-        return ProjectManager.projects;
-    }
-
-    public List<Object> search(String keyword) {
-        return null;
-    }
-
-    public List<Project> sortProjects(SortCriteria criteria) {
-        return null;
-    }
-
-    public List<Project> filterProjects(FilterCriteria criteria) {
-        return null;
-    }
-
-    public List<Task> getOverdueTasks(Project project) {
-        List<Task> overdue = new ArrayList<>();
-        List<Task> all = project.getTasks();
-        for (int i = 0; i < all.size() ; i++) {
-            Task cur = all.get(i);
-            if (cur.isOverdue()) {
-                overdue.add(cur);
-            }            
+    public Project getProject(String name) {
+        for (Project p : projects) {
+            if (p.getName() != null && p.getName().equals(name)) {
+                return p;
+            }
         }
-        return overdue;
+        return null;
     }
 
-    public List<Task> getUpcomingTasks(Project project) {
-        List<Task> upcoming = new ArrayList<>();
-        List<Task> all = project.getTasks();
-        for (int i = 0; i < all.size() ; i++) {
-            Task cur = all.get(i);
-            if (cur.isUrgent()) {
-                upcoming.add(cur);
-            }            
+    public List<Project> getAllProjects() {
+        return projects;
+    }
+
+    public Task addTask(Project project, Task data) {
+        project.addTask(data);
+        return data;
+    }
+
+    public void editTask(Project project, String name, Task data) {
+        project.editTask(name, data);
+    }
+
+    public void deleteTask(Project project, String name) {
+        project.removeTask(name);
+    }
+
+    public Task getTask(String name) {
+        for (Project p : projects) {
+            for (Task t : p.getTasks()) {
+                if (t.getName() != null && t.getName().equals(name)) {
+                    return t;
+                }
+            }
         }
-        return upcoming;
+        return null;
     }
 }
-

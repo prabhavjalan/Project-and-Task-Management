@@ -4,7 +4,7 @@ public class ProgressTracker {
         task.setStatus(status);
     }
 
-    public double calculateProjectProgress(Project project) {
+    public double calculateProgress(Project project) {
         return project.calculateProgress();
     }
 }

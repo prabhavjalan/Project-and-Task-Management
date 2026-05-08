@@ -3,18 +3,35 @@ import java.util.List;
 
 public class Filter {
 
-    public void sortAlphabetically(List<Project> projects) {
-        projects.sort(Comparator.comparing(Project::getName));
-    }
-
-    public void sortByCreationDate(List<Project> projects) {
-        projects.sort(Comparator.comparing(Project::getCreationDate));
-    }
-
-    public void sortByDeadline(List<Project> projects) {
-        projects.sort(Comparator.comparing(
-            p -> p.getTasks().isEmpty() ? null : p.getTasks().get(0).getDeadline(),
+    public <T extends Sortable> List<T> sortByDeadlineAsc(List<T> items) {
+        items.sort(Comparator.comparing(
+            Sortable::getDeadline,
             Comparator.nullsLast(Comparator.naturalOrder())
         ));
+        return items;
+    }
+
+    public <T extends Sortable> List<T> sortByDeadlineDesc(List<T> items) {
+        items.sort(Comparator.comparing(
+            Sortable::getDeadline,
+            Comparator.nullsLast(Comparator.reverseOrder())
+        ));
+        return items;
+    }
+
+    public <T extends Sortable> List<T> sortByCreationDate(List<T> items) {
+        items.sort(Comparator.comparing(
+            Sortable::getCreationDate,
+            Comparator.nullsLast(Comparator.naturalOrder())
+        ));
+        return items;
+    }
+
+    public <T extends Sortable> List<T> sortByAlphabet(List<T> items) {
+        items.sort(Comparator.comparing(
+            Sortable::getName,
+            Comparator.nullsLast(Comparator.naturalOrder())
+        ));
+        return items;
     }
 }
