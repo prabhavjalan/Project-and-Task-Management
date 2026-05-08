@@ -1,101 +1,98 @@
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-public class Project {
+public class Project implements Sortable {
 
-    private String title;
-    private String description;
-    private LocalDateTime deadline;
-    private LocalDateTime creationDate;
-    private List<String> tags = new ArrayList<>();
+    private String name;
+    private LocalDate deadline;
+    private LocalDate creationDate;
     private List<Task> tasks = new ArrayList<>();
+    private List<Tag> tags = new ArrayList<>();
 
     public Project() {
-
+        this.creationDate = LocalDate.now();
     }
-    public Project(String title, LocalDateTime deadline) {
-        this.title = title;
+
+    public Project(String name, LocalDate deadline) {
+        this.name = name;
         this.deadline = deadline;
-        this.creationDate = LocalDateTime.now();
+        this.creationDate = LocalDate.now();
     }
 
-    public String getTitle() {
-        return this.title;
+    public String getName() {
+        return this.name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getDescription() {
-        return this.description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public LocalDateTime getDeadline() {
+    public LocalDate getDeadline() {
         return this.deadline;
     }
 
-    public void setDeadline(LocalDateTime deadline) {
+    public void setDeadline(LocalDate deadline) {
         this.deadline = deadline;
     }
 
-    public LocalDateTime getCreationDate() {
+    public LocalDate getCreationDate() {
         return this.creationDate;
-    }
-
-    public List<String> getTags() {
-        return this.tags;
-    }
-
-    public void addTag(String tag) {
-        this.tags.add(tag);
-    }
-
-    public void removeTag(String tag) {
-        this.tags.remove(tag);
     }
 
     public List<Task> getTasks() {
         return this.tasks;
     }
 
-    public void addTasks(Task task) {
+    public void addTask(Task task) {
         this.tasks.add(task);
     }
 
-    public void removeTasks(Task task) {
-        this.tasks.remove(task);
+    public void editTask(String name, Task data) {
+        for (Task t : tasks) {
+            if (t.getName() != null && t.getName().equals(name)) {
+                if (data.getName() != null) t.setName(data.getName());
+                if (data.getDeadline() != null) t.setDeadline(data.getDeadline());
+                return;
+            }
+        }
     }
 
-    public int calculateProgress() {
-        // for sally
-        return 0;
+    public void removeTask(String name) {
+        tasks.removeIf(t -> t.getName() != null && t.getName().equals(name));
     }
 
-    public boolean isOverdue() {
-        LocalDateTime current = LocalDateTime.now();
-        if (current.isAfter(this.deadline)) {
-            return true;
+    public List<Tag> getTags() {
+        return this.tags;
+    }
+
+    public void addTag(Tag tag) {
+        this.tags.add(tag);
+    }
+
+    public void removeTag(Tag tag) {
+        this.tags.remove(tag);
+    }
+
+    public double calculateProgress() {
+        if (tasks.isEmpty()) return 0.0;
+        int completed = 0;
+        for (Task t : tasks) {
+            if (t.getStatus() == Status.COMPLETED) {
+                completed++;
+            }
         }
-        else {
-            return false;
-        }
+        return ((double) completed / tasks.size()) * 100.0;
     }
 
     public boolean isUrgent() {
-        LocalDateTime current = LocalDateTime.now();
-        long hours = ChronoUnit.HOURS.between(current, this.deadline);
-        if (hours <= 48) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        if (deadline == null) return false;
+        long days = ChronoUnit.DAYS.between(LocalDate.now(), this.deadline);
+        return days >= 0 && days <= 2;
     }
 
+    public boolean isOverdue() {
+        if (deadline == null) return false;
+        return LocalDate.now().isAfter(this.deadline);
+    }
 }
